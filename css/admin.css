@@ -1,0 +1,43 @@
+.cm_dash_widgets_container {
+	display: inline-block;
+}
+
+.cm_dash_widgets_container:nth-last-child(-n+1):first-child,
+.cm_dash_widgets_container:nth-last-child(-n+1):first-child ~ .cm_dash_widgets_container {
+	width: 100%;
+}
+
+.cm_dash_widgets_container:nth-last-child(n+2),
+.cm_dash_widgets_container:nth-last-child(n+2) ~ .cm_dash_widgets_container {
+	width: 49%;
+}
+
+.cm_dash_widgets_heading {
+	text-transform: uppercase;
+	font-size: 0.9em;
+	color: #aaa;
+}
+
+.cm_dash_widgets_value {
+	font-size: 3em;
+	line-height: 1.3em;
+	color: #7fc661;
+}
+
+.cm_dash_widgets_compare_value {
+	font-size: 3em;
+	line-height: 1.3em;
+	color: #64b4f2;
+}
+
+.cm_dash_widgets_diff_up {
+	color: #7fc661;
+}
+
+.cm_dash_widgets_diff_down {
+	color: #ff4a4a;
+}
+
+.cm_dash_widgets_heading .dashicons {
+	vertical-align: bottom;
+}
