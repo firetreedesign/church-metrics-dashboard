@@ -1,6 +1,10 @@
 <?php
 add_action( 'wp_dashboard_setup', 'cm_dash_widgets_widget_setup' );
 
+/**
+ * Retrive all of the Dashboard Widgets and set them up
+ */
+
 function cm_dash_widgets_widget_setup() {
 
 	$type = 'cm_dash_widgets';
@@ -58,6 +62,10 @@ function cm_dash_widgets_widget_setup() {
 	wp_reset_query();  // Restore global post data stomped by the_post().
 	
 }
+
+/**
+ * Display the Dashboard Widgets
+ */
 
 function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
     

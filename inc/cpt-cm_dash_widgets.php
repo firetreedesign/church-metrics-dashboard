@@ -50,71 +50,92 @@ add_action( 'init', function() {
 			'campus'	=> array(
 				'title'		=> __( 'Campus', 'cm-dash-widgets' ),
 				'function'	=> function() {
+					
+					// Define the Church Metrics credentials
 					$cm_args = array(
 						'user'	=> cm_dash_widgets_get_option('user'),
 						'key'	=> cm_dash_widgets_get_option('key'),
 					);
+					
+					// Initialize the Church Metrics class
 					$cm = new WP_Church_Metrics( $cm_args );
 					
+					// Define our request arguments
 					$cm_request_args = array(
 						'id' => get_post_meta( get_the_ID(), '_cm_dash_widgets_campus', true ),
 					);
+					
+					// Request the data from the API
 					$cm_request = $cm->campus( $cm_request_args );
 					$cm_body = wp_remote_retrieve_body( $cm_request );
 					$cm_body = json_decode( $cm_body );
 					echo $cm_body->slug;
 					
-					unset( $cm_body );
-					unset( $cm_request );
-					unset( $cm );
+					// Free up some memory
+					unset( $cm_body, $cm_request, $cm, $cm_args );
+
 				},
 			),
 			'category'	=> array(
 				'title'		=> __( 'Category', 'cm-dash-widgets' ),
 				'function'	=> function() {
+					
+					// Define the Church Metrics credentials
 					$cm_args = array(
 						'user'	=> cm_dash_widgets_get_option('user'),
 						'key'	=> cm_dash_widgets_get_option('key'),
 					);
+					
+					// Initialize the Church Metrics class
 					$cm = new WP_Church_Metrics( $cm_args );
 					
+					// Define our request arguments
 					$cm_request_args = array(
 						'id' => get_post_meta( get_the_ID(), '_cm_dash_widgets_category', true ),
 					);
+					
+					// Request the data from the API
 					$cm_request = $cm->category( $cm_request_args );
 					$cm_body = wp_remote_retrieve_body( $cm_request );
 					$cm_body = json_decode( $cm_body );
 					echo $cm_body->name;
 					
-					unset( $cm_body );
-					unset( $cm_request );
-					unset( $cm );
+					// Free up some memory
+					unset( $cm_body, $cm_request, $cm, $cm_args );
 				},
 			),
 			'event'	=> array(
 				'title'		=> __( 'Event', 'cm-dash-widgets' ),
 				'function'	=> function() {
+					
+					// Retrieve the event id
 					$event_id = get_post_meta( get_the_ID(), '_cm_dash_widgets_event', true );
 					
+					// If there is an event id, then let's continue
 					if ( strlen( $event_id ) > 0 ) {
 					
+						// Define the Church Metrics credentials
 						$cm_args = array(
 							'user'	=> cm_dash_widgets_get_option('user'),
 							'key'	=> cm_dash_widgets_get_option('key'),
 						);
+						
+						// Initialize the Church Metrics class
 						$cm = new WP_Church_Metrics( $cm_args );
 						
+						// Define our request arguments
 						$cm_request_args = array(
 							'id' => $event_id,
 						);
+						
+						// Request the data from the API
 						$cm_request = $cm->event( $cm_request_args );
 						$cm_body = wp_remote_retrieve_body( $cm_request );
 						$cm_body = json_decode( $cm_body );
 						echo $cm_body->name;
 						
-						unset( $cm_body );
-						unset( $cm_request );
-						unset( $cm );
+						// Free up some memory
+						unset( $cm_body, $cm_request, $cm, $cm_args );
 					
 					}
 				},
@@ -134,6 +155,8 @@ add_action( 'init', function() {
 			'visibility_user'	=> array(
 				'title'		=> __( 'Visible To', 'cm-dash-widgets' ),
 				'function'	=> function() {
+					
+					// Retrieve the data for the specified user
 					$user_data = get_userdata( get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true ) );
 					if ( $user_data ) {
 						echo $user_data->display_name;

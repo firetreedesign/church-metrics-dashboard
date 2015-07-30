@@ -4,26 +4,31 @@
  * @version 0.1.0
  */
 class cm_dash_widgets_settings {
+	
 	/**
  	 * Option key, and option page slug
  	 * @var string
  	 */
 	private $key = 'cm_dash_widgets_settings';
+	
 	/**
  	 * Options page metabox id
  	 * @var string
  	 */
 	private $metabox_id = 'cm_dash_widgets_settings_metabox';
+	
 	/**
 	 * Options Page title
 	 * @var string
 	 */
 	protected $title = '';
+	
 	/**
 	 * Options Page hook
 	 * @var string
 	 */
 	protected $options_page = '';
+	
 	/**
 	 * Constructor
 	 * @since 0.1.0
@@ -32,6 +37,7 @@ class cm_dash_widgets_settings {
 		// Set our title
 		$this->title = __( 'API Settings', 'cm-dash-widgets' );
 	}
+	
 	/**
 	 * Initiate our hooks
 	 * @since 0.1.0
@@ -41,6 +47,7 @@ class cm_dash_widgets_settings {
 		add_action( 'admin_menu', array( $this, 'add_options_page' ) );
 		add_action( 'cmb2_init', array( $this, 'add_options_page_metabox' ) );
 	}
+	
 	/**
 	 * Register our setting to WP
 	 * @since  0.1.0
@@ -48,6 +55,7 @@ class cm_dash_widgets_settings {
 	public function init() {
 		register_setting( $this->key, $this->key );
 	}
+	
 	/**
 	 * Add menu options page
 	 * @since 0.1.0
@@ -55,6 +63,7 @@ class cm_dash_widgets_settings {
 	public function add_options_page() {
 		$this->options_page = add_submenu_page( 'edit.php?post_type=cm_dash_widgets', $this->title, $this->title, 'manage_options', $this->key, array( $this, 'admin_page_display' ) );
 	}
+	
 	/**
 	 * Admin page markup. Mostly handled by CMB2
 	 * @since  0.1.0
@@ -67,6 +76,7 @@ class cm_dash_widgets_settings {
 		</div>
 		<?php
 	}
+	
 	/**
 	 * Add the options metabox to the array of metaboxes
 	 * @since  0.1.0
@@ -94,6 +104,7 @@ class cm_dash_widgets_settings {
 		) );
 		
 	}
+	
 	/**
 	 * Public getter method for retrieving protected/private variables
 	 * @since  0.1.0
@@ -107,10 +118,13 @@ class cm_dash_widgets_settings {
 		}
 		throw new Exception( 'Invalid property: ' . $field );
 	}
+	
 }
+
 // Get it started
 $GLOBALS['cm_dash_widgets_settings'] = new cm_dash_widgets_settings();
 $GLOBALS['cm_dash_widgets_settings']->hooks();
+
 /**
  * Helper function to get/return the myprefix_Admin object
  * @since  0.1.0
@@ -120,6 +134,7 @@ function cm_dash_widgets_settings() {
 	global $cm_dash_widgets_settings;
 	return $cm_dash_widgets_settings;
 }
+
 /**
  * Wrapper function around cmb2_get_option
  * @since  0.1.0

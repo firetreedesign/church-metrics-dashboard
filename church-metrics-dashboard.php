@@ -23,7 +23,10 @@ require_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets.php' );
 // Setup the Church Metrics Dashboard Widgets
 require_once( plugin_dir_path( __FILE__ ) . 'inc/dashboard.php' );
 
-// Disabled the Add New button if the API is not set up
+// Setup the settings page
+require_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets-settings.php' );
+
+// Disabled the [Add New] button if the API is not set up
 add_action( 'load-post-new.php', 'cm_dash_widgets_disable_new_post' );
 function cm_dash_widgets_disable_new_post() {
     
@@ -40,9 +43,7 @@ function cm_dash_widgets_disable_new_post() {
         
 }
 
-include_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets-settings.php' );
-
-// Enqueue the Admin stylesheet
+// Enqueue the Admin stylesheet only on the Dashboard page
 function cm_dash_widgets_admin_styles($hook) {
     if ( 'index.php' != $hook ) {
         return;
