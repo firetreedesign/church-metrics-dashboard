@@ -3,27 +3,27 @@
 add_action( 'init', function() {
 	
 	$labels = array(
-		'name'                => _x( 'Dashboard Widgets', 'Post Type General Name', 'cm-dash-widgets' ),
-		'singular_name'       => _x( 'Dashboard Widget', 'Post Type Singular Name', 'cm-dash-widgets' ),
-		'menu_name'           => __( 'Church Metrics', 'cm-dash-widgets' ),
-		'name_admin_bar'      => __( 'Church Metrics', 'cm-dash-widgets' ),
-		'parent_item_colon'   => __( 'Parent Dashboard Widget:', 'cm-dash-widgets' ),
-		'all_items'           => __( 'All Dashboard Widgets', 'cm-dash-widgets' ),
-		'add_new_item'        => __( 'Add New Dashboard Widget', 'cm-dash-widgets' ),
+		'name'                => _x( 'Dashboard Widgets', 'Post Type General Name', 'church-metrics-dashboard' ),
+		'singular_name'       => _x( 'Dashboard Widget', 'Post Type Singular Name', 'church-metrics-dashboard' ),
+		'menu_name'           => __( 'Church Metrics', 'church-metrics-dashboard' ),
+		'name_admin_bar'      => __( 'Church Metrics', 'church-metrics-dashboard' ),
+		'parent_item_colon'   => __( 'Parent Dashboard Widget:', 'church-metrics-dashboard' ),
+		'all_items'           => __( 'All Dashboard Widgets', 'church-metrics-dashboard' ),
+		'add_new_item'        => __( 'Add New Dashboard Widget', 'church-metrics-dashboard' ),
 		'add_new'             => __( 'Add New', 'cm-dash-widgets' ),
-		'new_item'            => __( 'New Dashboard Widget', 'cm-dash-widgets' ),
-		'edit_item'           => __( 'Edit Dashboard Widget', 'cm-dash-widgets' ),
-		'update_item'         => __( 'Update Dashboard Widget', 'cm-dash-widgets' ),
-		'view_item'           => __( 'View Dashboard Widget', 'cm-dash-widgets' ),
-		'search_items'        => __( 'Search Dashboard Widgets', 'cm-dash-widgets' ),
-		'not_found'           => __( 'Not found', 'cm-dash-widgets' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'cm-dash-widgets' ),
+		'new_item'            => __( 'New Dashboard Widget', 'church-metrics-dashboard' ),
+		'edit_item'           => __( 'Edit Dashboard Widget', 'church-metrics-dashboard' ),
+		'update_item'         => __( 'Update Dashboard Widget', 'church-metrics-dashboard' ),
+		'view_item'           => __( 'View Dashboard Widget', 'church-metrics-dashboard' ),
+		'search_items'        => __( 'Search Dashboard Widgets', 'church-metrics-dashboard' ),
+		'not_found'           => __( 'Not found', 'church-metrics-dashboard' ),
+		'not_found_in_trash'  => __( 'Not found in Trash', 'church-metrics-dashboard' ),
 	);
 	
 	register_extended_post_type( 'cm_dash_widgets', array(
 		
-		'label'               => __( 'Church Metrics', 'cm-dash-widgets' ),
-		'description'         => __( 'Church Metrics Dashboard', 'cm-dash-widgets' ),
+		'label'               => __( 'Church Metrics', 'church-metrics-dashboard' ),
+		'description'         => __( 'Church Metrics Dashboard', 'church-metrics-dashboard' ),
 		'labels'              => $labels,
 		'supports'            => array( 'title', ),
 		'hierarchical'        => false,
@@ -48,7 +48,7 @@ add_action( 'init', function() {
 		'admin_cols'			=> array(
 			'title',
 			'campus'	=> array(
-				'title'		=> __( 'Campus', 'cm-dash-widgets' ),
+				'title'		=> __( 'Campus', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					
 					// Define the Church Metrics credentials
@@ -77,7 +77,7 @@ add_action( 'init', function() {
 				},
 			),
 			'category'	=> array(
-				'title'		=> __( 'Category', 'cm-dash-widgets' ),
+				'title'		=> __( 'Category', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					
 					// Define the Church Metrics credentials
@@ -105,7 +105,7 @@ add_action( 'init', function() {
 				},
 			),
 			'event'	=> array(
-				'title'		=> __( 'Event', 'cm-dash-widgets' ),
+				'title'		=> __( 'Event', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					
 					// Retrieve the event id
@@ -141,35 +141,76 @@ add_action( 'init', function() {
 				},
 			),
 			'display_period'	=> array(
-				'title'		=> __( 'Display Period', 'cm-dash-widgets' ),
+				'title'		=> __( 'Display Period', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					echo ucwords( get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true ) );
 				},
 			),
 			'compare_period'	=> array(
-				'title'		=> __( 'Compare Period', 'cm-dash-widgets' ),
+				'title'		=> __( 'Compare Period', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					echo ucwords( get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true ) );
 				},
 			),
 			'visibility_user'	=> array(
-				'title'		=> __( 'Visible To', 'cm-dash-widgets' ),
+				'title'		=> __( 'Visible To', 'church-metrics-dashboard' ),
 				'function'	=> function() {
 					
-					// Retrieve the data for the specified user
-					$user_data = get_userdata( get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true ) );
-					if ( $user_data ) {
-						echo $user_data->display_name;
-					} else {
-						echo 'All Users';
+					// Visible to
+					$visible_to = get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true );
+					
+					if ( ! is_array( $visible_to ) ) {
+						$visible_to = explode( ',', $visible_to );
 					}
+					
+					foreach( $visible_to as $user ) {
+						switch( $user ) {
+							case 'all':
+								echo 'All Users<br />';
+								break;
+							default:
+								$user_data = get_userdata( $user );
+								echo $user_data->display_name . '<br />';
+								break;
+						}
+					}
+					
 				},
 			),
 		),
 		
-	), array(
+	),
+	array(
 		'singular'	=> 'Dashboard Widget',
 		'plural'	=> 'Dashboard Widgets',
 	) );
 	
+} );
+
+/**
+ * Filter the post updated messages
+ */
+
+add_filter('post_updated_messages', function( $messages ) {
+	
+	$post = get_post();
+	
+	$messages['cm_dash_widgets'] = array(
+		0	=> '', // Unused. Messages start at index 1.
+		1	=> sprintf( __('Dashboard Widget updated. <a href="%s">Visit Dashboard</a>', 'church-metrics-dashboard' ), esc_url( get_admin_url() ) ),
+		2	=> __('Custom field updated.', 'church-metrics-dashboard' ),
+		3	=> __('Custom field deleted.', 'church-metrics-dashboard' ),
+		4	=> __('Dashboard Widget updated.', 'church-metrics-dashboard' ),
+		/* translators: %s: date and time of the revision */
+		5	=> isset($_GET['revision']) ? sprintf( __('Dashboard Widget restored to revision from %s', 'church-metrics-dashboard' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+		6	=> sprintf( __('Dashboard Widget published. <a href="%s">Visit Dashboard</a>', 'church-metrics-dashboard' ), esc_url( get_admin_url() ) ),
+		7	=> __('Dashboard Widget saved.', 'church-metrics-dashboard' ),
+		8	=> __('Dashboard Widget submitted.', 'church-metrics-dashboard' ),
+		9	=> sprintf( __('Dashboard Widget scheduled for: <strong>%1$s</strong>.', 'church-metrics-dashboard' ),
+		  // translators: Publish box date format, see http://php.net/date
+		  date_i18n( __( 'M j, Y @ G:i' ), strtotime( $post->post_date ) ) ),
+		10	=> __('Dashboard Widget draft updated.', 'church-metrics-dashboard' ),
+	);
+	
+	return $messages;
 } );

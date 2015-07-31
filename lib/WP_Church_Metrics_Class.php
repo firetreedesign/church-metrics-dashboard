@@ -140,7 +140,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -149,6 +149,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -179,6 +180,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			// Set the defaults
 			$defaults = array(
 				'id' => NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -195,6 +197,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -227,6 +230,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				'id'				=> NULL,
 				'category_id'		=> NULL,
 				'week_reference'	=> NULL,
+				'cache'				=> 60 * MINUTE_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -250,7 +254,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			try {
 				
 				$data_args = array(
-					'url' => $this->api_url . $api_path,
+					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -280,7 +285,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -289,6 +294,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -318,7 +324,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -335,6 +342,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -364,7 +372,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 60 * MINUTE_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -373,6 +381,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -402,7 +411,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -419,6 +429,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -448,7 +459,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -457,6 +468,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -488,6 +500,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			$defaults = array(
 				'category_id'		=> NULL,
 				'week_reference'	=> NULL,
+				'cache'	=> 60 * MINUTE_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -508,7 +521,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			try {
 				
 				$data_args = array(
-					'url' => $this->api_url . $api_path,
+					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -544,6 +558,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				'category_id'	=> NULL,
 				'start_week'	=> NULL,
 				'end_week'		=> NULL,
+				'cache'			=> 60 * MINUTE_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -578,6 +593,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -607,7 +623,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id' 	=> NULL,
+				'cache'	=> 60 * MINUTE_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -624,6 +641,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -663,6 +681,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				'start_time'		=> NULL,
 				'end_time'			=> NULL,
 				'week_reference'	=> NULL,
+				'cache'				=> 60 * MINUTE_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -717,6 +736,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -746,7 +766,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 60 * MINUTE_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -763,6 +784,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -792,7 +814,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -801,6 +823,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -830,7 +853,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -847,6 +871,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -879,6 +904,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				'page'				=> 1,
 				'per_page'			=> 30,
 				'event_id'			=> NULL,
+				'cache'				=> 60 * MINUTE_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -898,6 +924,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -927,7 +954,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -944,6 +972,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data
@@ -973,7 +1002,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				// Arguments can go here
+				'cache'	=> 60 * MINUTE_IN_SECONDS,
 			);
 			 
 			$args = wp_parse_args( $args, $defaults );
@@ -982,6 +1011,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				 
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				 
 				// GET the data
@@ -1011,7 +1041,8 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 			
 			// Set the defaults
 			$defaults = array(
-				'id' => NULL,
+				'id'	=> NULL,
+				'cache'	=> 1 * DAY_IN_SECONDS,
 			);
 			
 			$args = wp_parse_args( $args, $defaults );
@@ -1028,6 +1059,7 @@ if ( ! class_exists( 'WP_Church_Metrics' ) ) :
 				
 				$data_args = array(
 					'url'	=> $this->api_url . $api_path,
+					'cache'	=> $args['cache'],
 				);
 				
 				// GET the data

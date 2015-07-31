@@ -7,39 +7,49 @@ add_action( 'wp_dashboard_setup', 'cm_dash_widgets_widget_setup' );
 
 function cm_dash_widgets_widget_setup() {
 
-	$type = 'cm_dash_widgets';
+	// Prepare our query
 	$args = array(
-		'post_type'			=> $type,
+		'post_type'			=> 'cm_dash_widgets',
 		'post_status'		=> 'publish',
 		'posts_per_page'	=> -1,
 	);
-
 	$my_query = null;
-	$my_query = new WP_Query($args);
 	
+	// Query the data
+	$my_query = new WP_Query( $args );
+	
+	// Check if there are any results
 	if ( $my_query->have_posts() ) {
 		
+		// Loop through each result
 		while ( $my_query->have_posts() ) : $my_query->the_post();
     
-			$campus_id = get_post_meta( get_the_ID(), '_cm_dash_widgets_campus', true );
-			$category_id = get_post_meta( get_the_ID(), '_cm_dash_widgets_category', true );
-			$event_id = get_post_meta( get_the_ID(), '_cm_dash_widgets_event', true );
-			$display = get_post_meta( get_the_ID(), '_cm_dash_widgets_display', true );
-			$display_period = get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true );
-			$compare_period = get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true );
-			$visibility_user = get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true );
+			// Grab our meta data
+			$campus_id			= get_post_meta( get_the_ID(), '_cm_dash_widgets_campus', true );
+			$category_id		= get_post_meta( get_the_ID(), '_cm_dash_widgets_category', true );
+			$event_id			= get_post_meta( get_the_ID(), '_cm_dash_widgets_event', true );
+			$display			= get_post_meta( get_the_ID(), '_cm_dash_widgets_display', true );
+			$display_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true );
+			$compare_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true );
+			$visibility_user	= get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true );
 			
+			if ( ! is_array( $visibility_user ) ) {
+				$visibility_user = explode( ',', $visibility_user );
+			}
 			
-			if ( $visibility_user != 'all' ) {
+			// Check the visibility to see if we should continue
+			if ( ! in_array( 'all', $visibility_user ) ) {
 				
+				// Grab the current user id and check if we should display the widget
 				$current_user_id = get_current_user_id();
 
-			    if ( $current_user_id && $visibility_user != $current_user_id ) {
+			    if ( $current_user_id && ! in_array( $current_user_id, $visibility_user ) ) {
 			        continue;
 			    }
 				
 			}
 			
+			// Define our Dashboard Widget
 			wp_add_dashboard_widget(
 				'cm_dash_widgets_dashboard_widget_' . get_the_id(),
 				get_the_title(),
@@ -59,16 +69,23 @@ function cm_dash_widgets_widget_setup() {
 		
 	}
 	
-	wp_reset_query();  // Restore global post data stomped by the_post().
+	// Restore global post data.
+	wp_reset_query();
 	
 }
 
 /**
  * Display the Dashboard Widgets
+ *
+ * @param	string	$post
+ * @param	array	$args	Array of arguments passed to the widget.
+ *
+ * @return	nothing
  */
 
-function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
+function cm_dash_widgets_dashboard_widget_callback( $post, $args ) {
     
+    // Determine the date range for the display period
     switch( $args['args']['display_period'] ) {
 	    
 	    case 'this week':
@@ -95,8 +112,13 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 	    	$range = cm_dash_widgets_range_year('last year' );
 	    	break;
 	    
+	    default:
+	    	$range = cm_dash_widgets_range_week('this week' );
+	    	break;
+	    
     }
     
+    // Determine the date range for the compare period
     switch( $args['args']['compare_period'] ) {
 	    
 	    case 'last week':
@@ -127,21 +149,28 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 	    	$compare_range = cm_dash_widgets_range_year('last year' );
 	    	break;
 	    
+	    default:
+	    	$compare_range = cm_dash_widgets_range_week('last week');
+	    	break;
+	    
     }
     
+    // Determine if there is an event id
     $event_id = NULL;
     if ( strlen( $args['args']['event_id'] ) > 0 ) {
 	    $event_id = $args['args']['event_id'];
     }
     
+    // Define our Church Metrics arguments
     $cm_args = array(
 		'user'	=> cm_dash_widgets_get_option('user'),
 		'key'	=> cm_dash_widgets_get_option('key'),
 	);
 	
+	// Initialize the Church Metrics API class
 	$cm = new WP_Church_Metrics( $cm_args );
 	
-	// Request values
+	// Define our request arguments
 	$request_args = array(
 		'campus_id'			=> $args['args']['campus_id'],
 		'category_id'		=> $args['args']['category_id'],
@@ -150,36 +179,60 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 		'end_time'			=> $range['end'],
 	);
 	
+	// Request the records from the API
 	$cm_request = $cm->records( $request_args );
+	
+	// Get the body from the response
 	$cm_body = json_decode( wp_remote_retrieve_body( $cm_request ) );
+	
+	// Request might be paginated. Look for a 'next' page
 	$next_link = $cm->get_link( $cm_request, 'next' );
+	
+	// Define our loop count
 	$loop_count = 0;
 	
-	while ( $next_link ) {
+	// Check if there is a 'next' page
+	while ( $next_link && $loop_count <= 1000 ) {
+		
+		// Request the records from the API
 		$cm_request_next = $cm->get( array( 'url' => $next_link ) );
+		
+		// Get the body from the response
 		$cm_request_body = json_decode( wp_remote_retrieve_body( $cm_request_next ) );
+		
+		// Request might be paginated. Look for a 'next' page
 		$next_link = $cm->get_link( $cm_request_next, 'next' );
 		
+		// Merge the response body with the previous response body
 		$cm_body = array_merge( $cm_body, $cm_request_body );
 		
-		if ( $loop_count > 1000 ) {
-			break;
-		}
+		// Increment our loop count
+		$loop_count++;
+		
 	}
 	
-	unset( $cm_request_next );
-	unset( $cm_request_body );
+	// Free up some memory
+	unset( $cm_request_next, $cm_request_body );
 	
+	// Define our initial values
 	$value_count = 0;
 	$compare_value_count = 0;
+	
+	// Loop through each record and add up the values
 	foreach( $cm_body as $record ) {
 		$value_count += $record->value;
 	}
 	
+	// Define our initial formatted value
 	$value_count_formatted = $value_count;
 	
+	// Make sure that there is at least one record
 	if ( is_array( $cm_body ) && count( $cm_body ) > 0 ) {
+		
+		// Determine the value format from the first record
 		$value_format = $cm_body[0]->category->format;
+		
+		// Format the value accordingly
 		switch( $value_format ) {
 			case 'currency':
 				$value_count_formatted = '$' . number_format( $value_count );
@@ -190,12 +243,13 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 		}
 	}
 	
-	unset( $cm_request );
-	unset( $cm_body );
+	// Free up some memory
+	unset( $cm_request, $cm_body );
 	
-	// Request values to compare
+	// Check if we are comparing any values
 	if ( $args['args']['compare_period'] != 'nothing' ) {
 		
+		// Define our request arguments
 		$request_args = array(
 			'campus_id'			=> $args['args']['campus_id'],
 			'category_id'		=> $args['args']['category_id'],
@@ -204,37 +258,55 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 			'end_time'			=> $compare_range['end'],
 		);
 		
+		// Request the records from the API
 		$cm_request = $cm->records( $request_args );
+		
+		// Get the body from the response
 		$cm_body = json_decode( wp_remote_retrieve_body( $cm_request ) );
+		
+		// Request might be paginated. Look for a 'next' page
 		$next_link = $cm->get_link( $cm_request, 'next' );
+		
+		// Define our loop count
 		$loop_count = 0;
 	
-		while ( $next_link ) {
+		// Check if there is a 'next' page
+		while ( $next_link && $loop_count <= 1000 ) {
+			
+			// Request the records from the API
 			$cm_request_next = $cm->get( array( 'url' => $next_link ) );
+			
+			// Get the body from the response
 			$cm_request_body = json_decode( wp_remote_retrieve_body( $cm_request_next ) );
+			
+			// Request might be paginated. Look for a 'next' page
 			$next_link = $cm->get_link( $cm_request_next, 'next' );
 			
+			// Merge the response body with the previous response body
 			$cm_body = array_merge( $cm_body, $cm_request_body );
 			
-			if ( $loop_count > 1000 ) {
-				break;
-			}
+			// Increment our loop count
+			$loop_count++;
 		}
 		
-		unset( $cm_request_next );
-		unset( $cm_request_body );
+		// Free up some memory
+		unset( $cm_request_next, $cm_request_body );
 		
-		//var_dump( $cm_body );
-		
-		$compare_value_count = 0;
+		// Loop through each record and add up the values
 		foreach( $cm_body as $record ) {
 			$compare_value_count += $record->value;
 		}
 		
+		// Define our initial formatted value
 		$compare_value_count_formatted = $compare_value_count;
 		
+		// Make sure that there is at least one record
 		if ( is_array( $cm_body ) && count( $cm_body ) > 0 ) {
+			
+			// Determine the value format from the first record
 			$compare_value_format = $cm_body[0]->category->format;
+			
+			// Format the value accordingly
 			switch( $compare_value_format ) {
 				case 'currency':
 					$compare_value_count_formatted = '$' . number_format( $compare_value_count );
@@ -243,18 +315,23 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 					$compare_value_count_formatted = number_format( $compare_value_count );
 					break;
 			}
+			
 		}
 		
-		unset( $cm_request );
-		unset( $cm_body );
-
+		// Free up some memory
+		unset( $cm_request, $cm_body );
 		
 	}
 	
-	
+	// Get the difference between the two values
 	$difference = cm_dash_widgets_percentage_change( $value_count, $compare_value_count);
+	
+	// Setup this variable
 	$difference_icon = '';
+	
+	// Depending on the trend, setup the appropriate icon and value
 	switch( $difference['trend'] ) {
+		
 		case 'up':
 			$difference_icon = '<span class="dashicons dashicons-arrow-up"></span>';
 			$difference['diff'] = $difference['diff'] . '%';
@@ -268,7 +345,10 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 		default:
 			$difference['diff'] = '';
 			break;
+			
 	}
+	
+	// Output our data
 	?>
 	<div class="cm_dash_widgets_container">
 		<div class="cm_dash_widgets_heading">
@@ -279,6 +359,7 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 		</div>
 	</div>
 	<?php
+	// Check if we are comparing values
 	if ( $args['args']['compare_period'] != 'nothing' ) {
 	?>
 		<div class="cm_dash_widgets_container">
@@ -292,48 +373,4 @@ function cm_dash_widgets_dashboard_widget_callback( $var, $args ) {
 		<?php
 	}
   
-}
-
-function cm_dash_widgets_range_year( $datestr ) {
-	date_default_timezone_set( date_default_timezone_get() );
-	$dt = strtotime( $datestr );
-	$res['start'] = gmdate('Y-m-d\T00:00:00\Z', strtotime('first day of january', $dt ) );
-	$res['end'] = gmdate('Y-m-d\T23:59:59\Z', strtotime('last day of december', $dt ) );
-	return $res;
-}
-
-function cm_dash_widgets_range_month( $datestr ) {
-	date_default_timezone_set( date_default_timezone_get() );
-	$dt = strtotime( $datestr );
-	$res['start'] = gmdate('Y-m-d\T00:00:00\Z', strtotime('first day of this month', $dt ) );
-	$res['end'] = gmdate('Y-m-d\T23:59:59\Z', strtotime('last day of this month', $dt ) );
-	return $res;
-}
-
-function cm_dash_widgets_range_week( $datestr ) {
-	date_default_timezone_set( date_default_timezone_get() );
-	$dt = strtotime( $datestr );
-	$res['start'] = date('N', $dt ) == 7 ? gmdate('Y-m-d\T00:00:00\Z', $dt ) : gmdate('Y-m-d\T00:00:00\Z', strtotime('last sunday', $dt ) );
-	$res['end'] = date('N', $dt ) == 6 ? gmdate('Y-m-d\T23:59:59\Z', $dt ) : gmdate('Y-m-d\T23:59:59\Z', strtotime('next saturday', $dt ) );
-	return $res;
-}
-
-function cm_dash_widgets_percentage_change( $cur, $prev ) {
-	if ( $cur == 0 ) {
-		if ( $prev == 0 ) {
-			return array('diff' => 0, 'trend' => '');
-		}
-		return array('diff' => -( $prev * 100 ), 'trend' => 'down');
-	}
-	if ( $prev == 0 ) {
-		return array('diff' => $cur * 100, 'trend' => 'up');
-	}
-	$difference = ( $cur - $prev ) / $prev * 100;
-	$trend = '';
-	if ( $cur > $prev ) {
-		$trend = 'up';
-	} else if ( $cur < $prev ) {
-		$trend = 'down';
-	}
-	return array('diff' => abs( round( $difference, 0 ) ), 'trend' => $trend );
 }

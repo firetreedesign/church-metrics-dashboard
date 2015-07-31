@@ -35,7 +35,7 @@ class cm_dash_widgets_settings {
 	 */
 	public function __construct() {
 		// Set our title
-		$this->title = __( 'API Settings', 'cm-dash-widgets' );
+		$this->title = __( 'API Settings', 'church-metrics-dashboard' );
 	}
 	
 	/**
@@ -93,12 +93,12 @@ class cm_dash_widgets_settings {
 		) );
 		// Set our CMB2 fields
 		$cmb->add_field( array(
-			'name' => __( 'Email Address', 'cm-dash-widgets' ),
+			'name' => __( 'Email Address', 'church-metrics-dashboard' ),
 			'id'   => 'user',
 			'type' => 'text_email',
 		) );
 		$cmb->add_field( array(
-			'name' => __( 'API Key', 'cm-dash-widgets' ),
+			'name' => __( 'API Key', 'church-metrics-dashboard' ),
 			'id'   => 'key',
 			'type' => 'text',
 		) );

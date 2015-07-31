@@ -2,10 +2,10 @@
 /**
  * Plugin Name: Church Metrics Dashboard
  * Description: Allows you to create Dashboard Widgets to display data from Church Metrics.
- * Author: Daniel Milner <dmilner@gmail.com>
- * Author URI: https://danielmilner.com/
+ * Author: FireTree Design, LLC <info@firetreedesign.com>
+ * Author URI: https://firetreedesign.com/
  * Version 1.0.0
- * Plugin URI: https://danielmilner.com/
+ * Plugin URI: https://firetreedesign.com/
  */
 
 // Setup the Church Metrics class
@@ -22,6 +22,9 @@ require_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets.php' );
 
 // Setup the Church Metrics Dashboard Widgets
 require_once( plugin_dir_path( __FILE__ ) . 'inc/dashboard.php' );
+
+// Include the helper functions
+require_once( plugin_dir_path( __FILE__ ) . 'inc/helper-functions.php' );
 
 // Setup the settings page
 require_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets-settings.php' );
