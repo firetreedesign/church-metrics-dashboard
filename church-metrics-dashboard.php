@@ -4,11 +4,7 @@
  * Description: Allows you to create Dashboard Widgets to display data from Church Metrics.
  * Author: FireTree Design, LLC <info@firetreedesign.com>
  * Author URI: https://firetreedesign.com/
-<<<<<<< HEAD
- * Version: 1.0.0
-=======
  * Version: 1.1.0
->>>>>>> release/1.1.0
  * Plugin URI: https://firetreedesign.com/
  */
 
