@@ -3,19 +3,19 @@
 add_action( 'init', function() {
 	
 	$labels = array(
-		'name'                => _x( 'Dashboard Widgets', 'Post Type General Name', 'church-metrics-dashboard' ),
-		'singular_name'       => _x( 'Dashboard Widget', 'Post Type Singular Name', 'church-metrics-dashboard' ),
+		'name'                => _x( 'Church Metrics', 'Post Type General Name', 'church-metrics-dashboard' ),
+		'singular_name'       => _x( 'Metric', 'Post Type Singular Name', 'church-metrics-dashboard' ),
 		'menu_name'           => __( 'Church Metrics', 'church-metrics-dashboard' ),
 		'name_admin_bar'      => __( 'Church Metrics', 'church-metrics-dashboard' ),
-		'parent_item_colon'   => __( 'Parent Dashboard Widget:', 'church-metrics-dashboard' ),
-		'all_items'           => __( 'All Dashboard Widgets', 'church-metrics-dashboard' ),
-		'add_new_item'        => __( 'Add New Dashboard Widget', 'church-metrics-dashboard' ),
-		'add_new'             => __( 'Add New', 'cm-dash-widgets' ),
-		'new_item'            => __( 'New Dashboard Widget', 'church-metrics-dashboard' ),
-		'edit_item'           => __( 'Edit Dashboard Widget', 'church-metrics-dashboard' ),
-		'update_item'         => __( 'Update Dashboard Widget', 'church-metrics-dashboard' ),
-		'view_item'           => __( 'View Dashboard Widget', 'church-metrics-dashboard' ),
-		'search_items'        => __( 'Search Dashboard Widgets', 'church-metrics-dashboard' ),
+		'parent_item_colon'   => __( 'Parent Metric:', 'church-metrics-dashboard' ),
+		'all_items'           => __( 'All Metrics', 'church-metrics-dashboard' ),
+		'add_new_item'        => __( 'Add New Metric', 'church-metrics-dashboard' ),
+		'add_new'             => __( 'Add New Metric', 'cm-dash-widgets' ),
+		'new_item'            => __( 'New Church Metric', 'church-metrics-dashboard' ),
+		'edit_item'           => __( 'Edit Church Metric', 'church-metrics-dashboard' ),
+		'update_item'         => __( 'Update Church Metric', 'church-metrics-dashboard' ),
+		'view_item'           => __( 'View Church Metric', 'church-metrics-dashboard' ),
+		'search_items'        => __( 'Search Church Metrics', 'church-metrics-dashboard' ),
 		'not_found'           => __( 'Not found', 'church-metrics-dashboard' ),
 		'not_found_in_trash'  => __( 'Not found in Trash', 'church-metrics-dashboard' ),
 	);
@@ -175,6 +175,19 @@ add_action( 'init', function() {
 						}
 					}
 					
+				},
+			),
+			'dashboard' => array(
+				'title' => '<span class="dashicons dashicons-dashboard" title="Show on Dashboard"></span>',
+				'function' => function() {
+					switch( get_post_meta( get_the_ID(), '_cm_dash_widgets_dashboard_show', true ) ) {
+						case 'yes':
+							echo '<span class="dashicons dashicons-yes"></span>';
+							break;
+						
+						default:
+							break;
+					}
 				},
 			),
 		),

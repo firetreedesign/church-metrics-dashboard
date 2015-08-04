@@ -12,6 +12,8 @@ function cm_dash_widgets_widget_setup() {
 		'post_type'			=> 'cm_dash_widgets',
 		'post_status'		=> 'publish',
 		'posts_per_page'	=> -1,
+		'meta_key'			=> '_cm_dash_widgets_dashboard_show',
+		'meta_value'		=> 'yes'
 	);
 	$my_query = null;
 	

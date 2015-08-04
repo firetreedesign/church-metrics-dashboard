@@ -109,7 +109,56 @@ function cm_dash_widgets_metaboxes() {
 	    'show_option_none' => false,
 	    'options'          => 'cm_dash_widgets_visibility_user_field',
 	) );
+	
+	/**
+     * Initiate the metabox
+     */
+    $cmb = new_cmb2_box( array(
+        'id'            => 'cm_dash_widgets_display_metabox',
+        'title'         => __( 'Display', 'church-metrics-dashboard' ),
+        'object_types'  => array( 'cm_dash_widgets', ), // Post type
+        'context'       => 'side',
+        'priority'      => 'default',
+        'show_names'    => true, // Show field names on the left
+    ) );
+    
+    $cmb->add_field( array(
+	    'name'		=> __( 'Show on Dashboard', 'church-metrics-dashboard' ),
+	    'id'		=> $prefix . 'dashboard_show',
+	    'type'		=> 'radio_inline',
+	    'default'	=> 'yes',
+	    'show_option_none' => false,
+	    'options'	=> array(
+	        'yes'	=> __( 'Yes', 'church-metrics-dashboard' ),
+	        'no'	=> __( 'No', 'church-metrics-dashboard' ),
+	    ),
+	) );
 
+	
+	$cmb->add_field( array(
+	    'name'    => __( 'Shortcode', 'church-metrics-dashboard' ),
+	    'desc'    => church_metrics_dashboard_shortcode_field_desc(),
+	    'default' => 'church_metrics_dashboard_shortcode_field_default',
+	    'id'      => $prefix . 'shortcode',
+	    'type'    => 'text',
+	    'attributes'	=> array(
+		    'readonly'	=> 'readonly',
+	    ),
+	) );
+
+}
+
+function church_metrics_dashboard_shortcode_field_default( $field_args, $field ) {
+	return '[church_metrics_dashboard id=' . $field->object_id . ']';
+}
+
+function church_metrics_dashboard_shortcode_field_desc() {
+	ob_start();
+	?>
+	Use this shortcode to display this widget on the front-end of your site.<br />
+		<strong>Additional Parameters:</strong> before, after, before_title, and after_title
+	<?php
+	return ob_get_clean();
 }
 
 /**

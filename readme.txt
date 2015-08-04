@@ -2,8 +2,8 @@
 Contributors: danielmilner,firetree
 Tags: church,metrics,stats,dashboard
 Requires at least: 3.8
-Tested up to: 4.2.3
-Stable tag: 1.0.0
+Tested up to: 4.3
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://ww.gnu.org/licenses/gpl-2.0.html
 
@@ -26,6 +26,14 @@ Requires a [Church Metrics](http://churchmetrics.com/) account.
 1. Dashboard Widgets
 
 == Changelog ==
+
+= 1.1.0 =
+* Added: Shortcode to display the data on the front-end.
+* Added: The ability to not display a metric on the Dashboard.
+* Added: Customizer settings to choose font colors.
+
+= 1.0.1 =
+* Fix: Some files were missing from the release.
 
 = 1.0.0 =
 * Initial release
