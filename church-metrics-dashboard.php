@@ -4,7 +4,11 @@
  * Description: Allows you to create Dashboard Widgets to display data from Church Metrics.
  * Author: FireTree Design, LLC <info@firetreedesign.com>
  * Author URI: https://firetreedesign.com/
+<<<<<<< HEAD
  * Version: 1.0.0
+=======
+ * Version: 1.1.0
+>>>>>>> release/1.1.0
  * Plugin URI: https://firetreedesign.com/
  */
 
@@ -22,6 +26,12 @@ require_once( plugin_dir_path( __FILE__ ) . 'inc/cpt-cm_dash_widgets.php' );
 
 // Setup the Church Metrics Dashboard Widgets
 require_once( plugin_dir_path( __FILE__ ) . 'inc/dashboard.php' );
+
+// Setup the Church Metrics Dashboard Shortcode
+require_once( plugin_dir_path( __FILE__ ) . 'inc/shortcode.php' );
+
+// Setup the Customizer controls
+require_once( plugin_dir_path( __FILE__ ) . 'inc/customizer/customizer.php' );
 
 // Include the helper functions
 require_once( plugin_dir_path( __FILE__ ) . 'inc/helper-functions.php' );
@@ -56,3 +66,10 @@ function cm_dash_widgets_admin_styles($hook) {
     wp_enqueue_style( 'cm_dash_widgets_admin_css' );
 }
 add_action( 'admin_enqueue_scripts', 'cm_dash_widgets_admin_styles' );
+
+// Enqueue the Display stylesheet
+function cm_dash_widgets_display_styles() {
+	wp_enqueue_style( 'church-metrics-dashboard', plugin_dir_url( __FILE__ ) . 'css/display.css', array( 'dashicons' ), '1.0.1' );
+}
+
+add_action( 'wp_enqueue_scripts', 'cm_dash_widgets_display_styles' );
