@@ -45,7 +45,7 @@ function cm_dash_widgets_metaboxes() {
 	    'name'             => __( 'Category', 'church-metrics-dashboard' ),
 	    'desc'             => __( 'Select a category', 'church-metrics-dashboard' ),
 	    'id'               => $prefix . 'category',
-	    'type'             => 'pw_select',
+	    'type'             => 'pw_multiselect',
 	    'show_option_none' => false,
 	    'options'          => 'cm_dash_widgets_category_field',
 	) );
@@ -80,13 +80,19 @@ function cm_dash_widgets_metaboxes() {
 	    'default'			=> 'this_week',
 	    'show_option_none'	=> false,
 	    'options'			=> array(
-	    	'this week'		=> __( 'This Week', 'church-metrics-dashboard' ),
-	    	'last week'		=> __( 'Last Week', 'church-metrics-dashboard' ),
-	    	'this month'	=> __( 'This Month', 'church-metrics-dashboard' ),
-	    	'last month'	=> __( 'Last Month', 'church-metrics-dashboard' ),
-	    	'this year'		=> __( 'This Year', 'church-metrics-dashboard' ),
-	    	'last year'		=> __( 'Last Year', 'church-metrics-dashboard' ),
-	    	'all_time'		=> __( 'All Time', 'church-metrics-dashboard' ),
+	    	'this week'					=> __( 'This Week', 'church-metrics-dashboard' ),
+	    	'last week'					=> __( 'Last Week', 'church-metrics-dashboard' ),
+	    	'this month'				=> __( 'This Month', 'church-metrics-dashboard' ),
+	    	'last month'				=> __( 'Last Month', 'church-metrics-dashboard' ),
+	    	'this year'					=> __( 'This Year', 'church-metrics-dashboard' ),
+	    	'last year'					=> __( 'Last Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-this-year'		=> __( 'Weekly Average This Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-last-year'		=> __( 'Weekly Average Last Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-last-year-yoy'	=> __( 'Weekly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
+	    	'monthly-avg-this-year'		=> __( 'Monthly Average This Year', 'church-metrics-dashboard' ),
+	    	'monthly-avg-last-year'		=> __( 'Monthly Average Last Year', 'church-metrics-dashboard' ),
+	    	'monthly-avg-last-year-yoy'	=> __( 'Monthly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
+	    	'all_time'					=> __( 'All Time', 'church-metrics-dashboard' ),
 	    ),
 	) );
 	
@@ -315,6 +321,14 @@ function cm_dash_widgets_cmb_opt_groups( $args, $defaults, $field_object, $field
 		),
 		__( 'This Year', 'church-metrics-dashboard' ) => array(
 			'last year' => __( 'Last Year', 'church-metrics-dashboard' ),
+		),
+		__( 'Weekly Average This Year', 'church-metrics-dashboard' ) => array(
+			'weekly-avg-last-year' => __( 'Weekly Average Last Year', 'church-metrics-dashboard' ),
+			'weekly-avg-last-year-yoy' => __( 'Weekly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
+		),
+		__( 'Monthly Average This Year', 'church-metrics-dashboard' ) => array(
+			'monthly-avg-last-year' => __( 'Monthly Average Last Year', 'church-metrics-dashboard' ),
+			'monthly-avg-last-year-yoy' => __( 'Monthly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
 		),
 	);
 	

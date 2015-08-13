@@ -3,7 +3,7 @@ Contributors: danielmilner,firetree
 Tags: church,metrics,stats,dashboard
 Requires at least: 3.8
 Tested up to: 4.3
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://ww.gnu.org/licenses/gpl-2.0.html
 
@@ -11,9 +11,24 @@ Display Church Metrics Dashboard Widgets on your WordPress Dashboard
 
 == Description ==
 
-Build custom Dashboard Widgets to display data from Church Metrics. Compare numbers from different time periods. Limit Dashboard Widgets to a specific user or display them for everyone.
+Build custom metrics to display data from Church Metrics. Compare numbers from different time periods. Display them in your WordPress Dashboard or anywhere on your site using a shortcode. Limit metrics to a specific user or display them for everyone.
 
 Requires a [Church Metrics](http://churchmetrics.com/) account.
+
+Available Display Periods:
+* This Week
+* Last Week
+* This Month
+* Last Month
+* This Year
+* Last Year
+* Weekly Average This Year
+* Weekly Average Last Year
+* Weekly Average Last Year (Year Over Year)
+* Monthly Average This Year
+* Monthly Average Last Year
+* Monthly Average Last Year (Year Over Year)
+* All Time
 
 == Installation ==
 
@@ -26,6 +41,17 @@ Requires a [Church Metrics](http://churchmetrics.com/) account.
 1. Dashboard Widgets
 
 == Changelog ==
+
+= 1.2.0 =
+* Compatibility updates for WordPress 4.3 Admin Page Titles.
+* Added: Combine counts from multiple categories.
+* Added: More display periods:
+    Weekly Average This Year,
+    Weekly Average Last Year,
+    Weekly Average Last Year (Year Over Year),
+    Monthly Average This Year,
+    Monthly Average Last Year,
+    Monthly Average Last Year (Year Over Year)
 
 = 1.1.0 =
 * Added: Shortcode to display the data on the front-end.
