@@ -36,6 +36,20 @@ Available Display Periods:
 2. Activate the Church Metrics Dashboard plugin through the \'Plugins\' menu in WordPress
 3. Configure the plugin by going to the Church Metrics menu that appears in your admin menu
 
+== Frequently Asked Questions ==
+
+= What parameters can I use with the shortcode? =
+
+Here is what the shortcode would look like with all of the parameters:
+`[church_metrics_dashboard id=1 before="<div class='my-class'>" after="</div>" before_title="<h3>" after_title="</h3>"]`
+
+* __id__ _(Required)_ the id of the metric to display.
+* __before__ _(Optional)_ has no default value.
+* __after__ _(Optional)_ has no default value.
+* __before_title__ _(Optional)_ default value is "<h2>"
+* __after_title__ _(Optional)_ default value is "</h2>".
+
+
 == Screenshots ==
 
 1. Dashboard Widgets
