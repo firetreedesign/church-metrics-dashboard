@@ -53,10 +53,6 @@ class Church_Metrics_Dashboard {
 	 */
 	
 	public function admin_styles( $hook ) {
-		
-		if ( 'index.php' != $hook ) {
-	        return;
-	    }
 	
 	    wp_register_style( 'cm_dash_widgets_admin_css', plugin_dir_url( __FILE__ ) . '../css/admin.css' );
 	    wp_enqueue_style( 'cm_dash_widgets_admin_css' );
@@ -322,6 +318,7 @@ class Church_Metrics_Dashboard {
 				$display			= get_post_meta( get_the_ID(), '_cm_dash_widgets_display', true );
 				$display_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true );
 				$compare_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true );
+				$compare_to			= get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_to', true );
 				$visibility_user	= get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true );
 				
 				if ( ! is_array( $visibility_user ) ) {
@@ -353,6 +350,7 @@ class Church_Metrics_Dashboard {
 						'display'			=> $display,
 						'display_period'	=> $display_period,
 						'compare_period'	=> $compare_period,
+						'compare_to'		=> $compare_to,
 					)
 				);
 	    
@@ -375,152 +373,186 @@ class Church_Metrics_Dashboard {
 	 */
 	
 	public function wp_dashboard_setup_display( $post, $args ) {
-		
-		$display_period_title = '';
-		$compare_period_title = '';
-		
-		// Determine the date range for the display period
-	    switch( $args['args']['display_period'] ) {
-		    
-		    case 'this week':
-		    	$range = $this->get_range_week('this week');
-		    	$display_period_title = 'this week';
-		    	break;
-		    
-		    case 'last week':
-		    	$range = $this->get_range_week('last week');
-		    	$display_period_title = 'last week';
-		    	break;
-		    
-		    case 'this month':
-		    	$range = $this->get_range_month('this month');
-		    	$display_period_title = 'this month';
-		    	break;
-		    
-		    case 'last month':
-		    	$range = $this->get_range_month('last month');
-		    	$display_period_title = 'last month';
-		    	break;
-		    
-		    case 'this year':
-		    	$range = $this->get_range_year('this year');
-		    	$display_period_title = 'this year';
-		    	break;
-		    
-		    case 'last year':
-		    	$range = $this->get_range_year('last year');
-		    	$display_period_title = 'last year';
-		    	break;
-		    
-		    case 'weekly-avg-this-year':
-		    	$range = $this->get_range_year('this year');
-		    	$display_period_title = 'weekly avg this year';
-		    	break;
-		    	
-		    case 'weekly-avg-last-year':
-		    	$range = $this->get_range_year('last year');
-		    	$display_period_title = 'weekly avg last year';
-		    	break;
-		    
-		    case 'monthly-avg-this-year':
-		    	$range = $this->get_range_monthly_avg_year('this year');
-		    	$display_period_title = 'monthly avg this year';
-		    	break;
-		    
-		    case 'monthly-avg-last-year':
-		    	$range = $this->get_range_year('last year');
-		    	$display_period_title = 'monthly avg last year';
-		    	break;
-		    
-		    case 'weekly-avg-last-year-yoy':
-		    	$range = $this->get_range_year_weekly_yoy('last year');
-		    	$display_period_title = 'weekly avg last yr (yoy)';
-		    	break;
-		    
-		    case 'monthly-avg-last-year-yoy':
-		    	$range = $this->get_range_monthly_avg_year('last year');
-		    	$display_period_title = 'monthly avg last yr (yoy)';
-		    	break;
-		    
-		    default:
-		    	$range = $this->get_range_week('this week');
-		    	$display_period_title = 'this week';
-		    	break;
-		    
-	    }
-	    
-	    // Determine the date range for the compare period
-	    switch( $args['args']['compare_period'] ) {
-		    
-		    case 'last week':
-		    	$compare_range = $this->get_range_week('last week');
-		    	$compare_period_title = 'last week';
-		    	break;
-		    
-		    case 'this week last year':
-		    	$compare_range = $this->get_range_week('this week last year');
-		    	$compare_period_title = 'this week last year';
-		    	break;
-		    
-		    case 'last week last year':
-		    	$compare_range = $this->get_range_week('last week last year');
-		    	$compare_period_title = 'last week last year';
-		    	break;
-		    
-		    case 'last month':
-		    	$compare_range = $this->get_range_month('last month' );
-		    	$compare_period_title = 'last month';
-		    	break;
-		    
-		    case 'this month last year':
-		    	$compare_range = $this->get_range_month('this month last year' );
-		    	$compare_period_title = 'this month last year';
-		    	break;
-		    
-		    case 'last month last year':
-		    	$compare_range = $this->get_range_month('last month last year' );
-		    	$compare_period_title = 'last month last year';
-		    	break;
-		    
-		    case 'last year':
-		    	$compare_range = $this->get_range_year('last year' );
-		    	$compare_period_title = 'last year';
-		    	break;
-		    
-		    case 'weekly-avg-last-year':
-		    	$compare_range = $this->get_range_year('last year');
-		    	$compare_period_title = 'weekly avg last year';
-		    	break;
-		    
-		    case 'monthly-avg-last-year':
-		    	$compare_range = $this->get_range_year('last year');
-		    	$compare_period_title = 'monthly avg last year';
-		    	break;
-		    
-		    case 'weekly-avg-last-year-yoy':
-		    	$compare_range = $this->get_range_year_weekly_yoy('last year');
-		    	$compare_period_title = 'weekly avg last yr (yoy)';
-		    	break;
-		    
-		    case 'monthly-avg-last-year-yoy':
-		    	$compare_range = $this->get_range_monthly_avg_year('last year');
-		    	$compare_period_title = 'monthly avg last yr (yoy)';
-		    	break;
-		    
-		    default:
-		    	$compare_range = $this->get_range_week('last week');
-		    	$compare_period_title = 'last week';
-		    	break;
-		    
-	    }
 	    
 	    // Determine if there is an event id
 	    $event_id = NULL;
 	    if ( strlen( $args['args']['event_id'] ) > 0 ) {
 		    $event_id = $args['args']['event_id'];
 	    }
-	    
-	    // Define our Church Metrics arguments
+	    		
+		if ( ! is_array( $args['args']['category_id'] ) ) {
+			$args['args']['category_id'] = explode( ',', $args['args']['category_id'] );
+		}
+		
+		if ( is_array( $args['args']['compare_to'] ) ) {
+			
+			foreach ( (array) $args['args']['compare_to'] as $key => $period ) {
+				
+				// Determine the date range for the display period
+			    $range			= $this->get_range( $args['args']['display_period'] );
+			    $compare_range	= $this->get_range( $period['compare_period'] );
+				
+				$count_args = array(
+					'display_period'	=> $args['args']['display_period'],
+					'campus_id'			=> $args['args']['campus_id'],
+					'category_id'		=> $args['args']['category_id'],
+					'event_id'			=> $event_id,
+					'start_time'		=> $range['start'],
+					'end_time'			=> $range['end'],
+				);
+		
+				$value_data			= $this->count( $count_args );
+				$formatted_value	= $this->format_value( $value_data['value'], $value_data['format'] );
+			
+				$count_args = array(
+					'display_period'	=> $period['compare_period'],
+					'campus_id'			=> $args['args']['campus_id'],
+					'category_id'		=> $args['args']['category_id'],
+					'event_id'			=> $event_id,
+					'start_time'		=> $compare_range['start'],
+					'end_time'			=> $compare_range['end'],
+				);
+				
+				$compare_value_data			= $this->count( $count_args );
+				$formatted_compare_value	= $this->format_value( $compare_value_data['value'], $compare_value_data['format'] );
+
+				// Get the difference between the two values
+				$difference = $this->percentage_change( $value_data['value'], $compare_value_data['value'] );
+				
+				$data = array(
+					'display_period'		=> $args['args']['display_period'],
+					'display_period_title'	=> $this->period_desc( $args['args']['display_period'] ),
+					'trend'					=> $difference['trend'],
+					'trend_icon'			=> $difference['icon'],
+					'difference'			=> $difference['diff'],
+					'value_count'			=> $value_data['value'],
+					'value_count_formatted'	=> $formatted_value,
+					'compare_period'		=> $period['compare_period'],
+					'compare_period_title'	=> $this->period_desc( $period['compare_period'] ),
+					'compare_value_count'	=> $compare_value_data['value'],
+					'compare_value_count_formatted'	=> $formatted_compare_value,
+				);
+		
+				// Output our data
+				echo $this->output( $data );
+				
+			}
+			
+		} else {
+			
+			// Determine the date range for the display period
+		    $range			= $this->get_range( $args['args']['display_period'] );
+		    $compare_range	= $this->get_range( $args['args']['compare_period'] );
+			
+			$count_args = array(
+				'display_period'	=> $args['args']['display_period'],
+				'campus_id'			=> $args['args']['campus_id'],
+				'category_id'		=> $args['args']['category_id'],
+				'event_id'			=> $event_id,
+				'start_time'		=> $range['start'],
+				'end_time'			=> $range['end'],
+			);
+	
+			$value_data			= $this->count( $count_args );
+			$formatted_value	= $this->format_value( $value_data['value'], $value_data['format'] );
+			
+			// Check if we are comparing any values
+			if ( $args['args']['compare_period'] != 'nothing' ) {
+				
+				$count_args = array(
+					'display_period'	=> $args['args']['compare_period'],
+					'campus_id'			=> $args['args']['campus_id'],
+					'category_id'		=> $args['args']['category_id'],
+					'event_id'			=> $event_id,
+					'start_time'		=> $compare_range['start'],
+					'end_time'			=> $compare_range['end'],
+				);
+				
+				$compare_value_data			= $this->count( $count_args );
+				$formatted_compare_value	= $this->format_value( $compare_value_data['value'], $compare_value_data['format'] );
+				
+				// Get the difference between the two values
+				$difference = $this->percentage_change( $value_data['value'], $compare_value_data['value'] );
+				
+			}
+			
+			if ( ! isset( $difference ) ) {
+				$difference = array(
+					'trend'	=> '',
+					'diff'	=> '',
+					'icon'	=> '',
+				);
+			}
+					
+			$data = array(
+				'display_period'		=> $args['args']['display_period'],
+				'display_period_title'	=> $this->period_desc( $args['args']['display_period'] ),
+				'trend'					=> $difference['trend'],
+				'trend_icon'			=> $difference['icon'],
+				'difference'			=> $difference['diff'],
+				'value_count'			=> $value_data['value'],
+				'value_count_formatted'	=> $formatted_value,
+				'compare_period'		=> $args['args']['compare_period'],
+				'compare_period_title'	=> $this->period_desc( $args['args']['compare_period'] ),
+				'compare_value_count'	=> ( isset( $compare_value_data['value'] ) ) ? $compare_value_data['value'] : '',
+				'compare_value_count_formatted'	=> ( isset( $formatted_compare_value ) ) ? $formatted_compare_value : '',
+			);
+	
+			// Output our data
+			echo $this->output( $data );
+			
+		}
+		
+	}
+	
+	/**
+	 * Generate the output
+	 *
+	 * @param	array	$data	Array of data to display
+	 *
+	 * @return 	string	HTML output.
+	 */
+	
+	public function output( $data ) {
+		ob_start(); ?>
+		<div>
+			<div class="cm_dash_widgets_container">
+				<div class="cm_dash_widgets_heading">
+					<?php echo $data['display_period_title']; ?>
+					<?php if ( $data['compare_period'] != 'nothing' ) : ?>
+						<span class="cm_dash_widgets_diff_<?php echo $data['trend']; ?>"><?php echo $data['trend_icon']; ?><?php echo $data['difference']; ?></span>
+					<?php endif; ?>
+				</div>
+				<div class="cm_dash_widgets_value">
+					<?php echo $data['value_count_formatted']; ?>
+				</div>
+			</div>
+			<?php if ( $data['compare_period'] != 'nothing' ) : ?>
+			<div class="cm_dash_widgets_container">
+				<div class="cm_dash_widgets_heading">
+					<?php echo $data['compare_period_title']; ?>
+				</div>
+				<div class="cm_dash_widgets_compare_value">
+					<?php echo $data['compare_value_count_formatted']; ?>
+				</div>
+			</div>
+			<?php endif; ?>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+	
+	/**
+	 * Count our records
+	 *
+	 * @param	array	$data	An array of parameters to define our data
+	 *
+	 * @return 	int	The total count.
+	 */
+	
+	public function count( $data ) {
+		
+		// Define our Church Metrics arguments
 	    $cm_args = array(
 			'user'	=> cm_dash_widgets_get_option('user'),
 			'key'	=> cm_dash_widgets_get_option('key'),
@@ -529,26 +561,19 @@ class Church_Metrics_Dashboard {
 		// Initialize the Church Metrics API class
 		$cm = new WP_Church_Metrics( $cm_args );
 		
-		if ( ! is_array( $args['args']['category_id'] ) ) {
-			$args['args']['category_id'] = explode( ',', $args['args']['category_id'] );
-		}
-		
-		// Define our initial values
 		$value_count = 0;
-		$compare_value_count = 0;
-		$value_format = '';
 		
-		foreach ( $args['args']['category_id'] as $category ) {
+		foreach ( $data['category_id'] as $category ) {
 			
 			// Define our request arguments
 			$request_args = array(
-				'campus_id'			=> $args['args']['campus_id'],
+				'campus_id'			=> $data['campus_id'],
 				'category_id'		=> $category,
-				'event_id'			=> $event_id,
-				'start_time'		=> $range['start'],
-				'end_time'			=> $range['end'],
+				'event_id'			=> $data['event_id'],
+				'start_time'		=> $data['start_time'],
+				'end_time'			=> $data['end_time'],
 			);
-			
+
 			// Request the records from the API
 			$cm_request = $cm->records( $request_args );
 			
@@ -590,9 +615,9 @@ class Church_Metrics_Dashboard {
 			}
 			
 		}
-		
+
 		// Calculate the average
-		switch( $args['args']['display_period'] ) {
+		switch( $data['display_period'] ) {
 			
 			case 'weekly-avg-this-year':
 				$value_count = $value_count / date( 'W' , strtotime('today') );
@@ -630,188 +655,131 @@ class Church_Metrics_Dashboard {
 			
 		}
 		
-		// Define our initial formatted value
-		$value_count_formatted = $value_count;
-		
 		// Make sure that there is at least one record
 		if ( is_array( $cm_body ) && count( $cm_body ) > 0 && $value_count != 'No data' ) {
 			
 			// Determine the value format from the first record
 			$value_format = $cm_body[0]->category->format;
 			
-			// Format the value accordingly
-			switch( $value_format ) {
-				case 'currency':
-					$value_count_formatted = '$' . number_format( $value_count );
-					break;
-				default:
-					$value_count_formatted = number_format( $value_count );
-					break;
-			}
+			
 		}
 		
 		// Free up some memory
-		unset( $cm_request, $cm_body );
+		unset( $cm, $cm_args, $cm_request, $cm_body );
 		
-		// Check if we are comparing any values
-		if ( $args['args']['compare_period'] != 'nothing' ) {
-			
-			foreach ( $args['args']['category_id'] as $category ) {
-			
-				// Define our request arguments
-				$request_args = array(
-					'campus_id'			=> $args['args']['campus_id'],
-					'category_id'		=> $category,
-					'event_id'			=> $event_id,
-					'start_time'		=> $compare_range['start'],
-					'end_time'			=> $compare_range['end'],
-				);
-				
-				// Request the records from the API
-				$cm_request = $cm->records( $request_args );
-				
-				// Get the body from the response
-				$cm_body = json_decode( wp_remote_retrieve_body( $cm_request ) );
-				
-				// Request might be paginated. Look for a 'next' page
-				$next_link = $cm->get_link( $cm_request, 'next' );
-				
-				// Define our loop count
-				$loop_count = 0;
-			
-				// Check if there is a 'next' page
-				while ( $next_link && $loop_count <= 1000 ) {
-					
-					// Request the records from the API
-					$cm_request_next = $cm->get( array( 'url' => $next_link ) );
-					
-					// Get the body from the response
-					$cm_request_body = json_decode( wp_remote_retrieve_body( $cm_request_next ) );
-					
-					// Request might be paginated. Look for a 'next' page
-					$next_link = $cm->get_link( $cm_request_next, 'next' );
-					
-					// Merge the response body with the previous response body
-					$cm_body = array_merge( $cm_body, $cm_request_body );
-					
-					// Increment our loop count
-					$loop_count++;
-				}
-				
-				// Free up some memory
-				unset( $cm_request_next, $cm_request_body );
-				
-				// Loop through each record and add up the values
-				foreach( $cm_body as $record ) {
-					$compare_value_count += $record->value;
-				}
-			
-			}
-			
-			// Calculate the average
-			switch( $args['args']['compare_period'] ) {
-				
-				case 'weekly-avg-last-year':
-					$compare_value_count = $compare_value_count / 52;
-					break;
-					
-				case 'monthly-avg-last-year':
-					$compare_value_count = $compare_value_count / 12;
-					break;
-				
-				case 'weekly-avg-last-year-yoy':
-					$compare_value_count = $compare_value_count / date( 'W' , strtotime('today last year') );
-					break;
-				
-				case 'monthly-avg-last-year-yoy':
-					$months_to_date = date( 'n', strtotime('today last year') ) - 1;
-					if ( $months_to_date > 0 ) {
-						$compare_value_count = $compare_value_count / $months_to_date;
-					} else {
-						$compare_value_count = 'No data';
-					}
-					break;
-				
-			}
-			
-			// Define our initial formatted value
-			$compare_value_count_formatted = $compare_value_count;
-			
-			// Make sure that there is at least one record
-			if ( is_array( $cm_body ) && count( $cm_body ) > 0 ) {
-				
-				// Determine the value format from the first record
-				$compare_value_format = $cm_body[0]->category->format;
-				
-				// Format the value accordingly
-				switch( $compare_value_format ) {
-					case 'currency':
-						$compare_value_count_formatted = '$' . number_format( $compare_value_count );
-						break;
-					default:
-						$compare_value_count_formatted = number_format( $compare_value_count );
-						break;
-				}
-				
-			}
-			
-			// Free up some memory
-			unset( $cm_request, $cm_body );
-			
-		}
+		$return_data = array(
+			'value'		=> $value_count,
+			'format'	=> $value_format,
+		);
 		
-		// Get the difference between the two values
-		$difference = $this->percentage_change( $value_count, $compare_value_count );
+		return $return_data;
 		
-		// Setup this variable
-		$difference_icon = '';
+	}
+	
+	/**
+	 * Format the value
+	 *
+	 * @param	$value	The value to format.
+	 * @param	$format	The format to convert to.
+	 *
+	 * @return	string	The formatted value.
+	 */
+	
+	public function format_value( $value, $format ) {
 		
-		// Depending on the trend, setup the appropriate icon and value
-		switch( $difference['trend'] ) {
-			
-			case 'up':
-				$difference_icon = '<span class="dashicons dashicons-arrow-up"></span>';
-				$difference['diff'] = $difference['diff'] . '%';
+		switch( $format ) {
+			case 'currency':
+				return '$' . number_format( $value );
 				break;
-			
-			case 'down':
-				$difference_icon = '<span class="dashicons dashicons-arrow-down"></span>';
-				$difference['diff'] = $difference['diff'] . '%';
-				break;
-			
 			default:
-				$difference['diff'] = '';
+				return (string)number_format( $value );
 				break;
-				
 		}
 		
-		// Output our data
-		?>
-		<div class="cm_dash_widgets_container">
-			<div class="cm_dash_widgets_heading">
-				<?php echo $display_period_title; ?>
-				<?php if ( $args['args']['compare_period'] != 'nothing' ) : ?>
-					<span class="cm_dash_widgets_diff_<?php echo $difference['trend']; ?>"><?php echo $difference_icon; ?><?php echo $difference['diff']; ?></span>
-				<?php endif; ?>
-			</div>
-			<div class="cm_dash_widgets_value">
-				<?php echo $value_count_formatted; ?>
-			</div>
-		</div>
-		<?php
-		// Check if we are comparing values
-		if ( $args['args']['compare_period'] != 'nothing' ) {
-		?>
-			<div class="cm_dash_widgets_container">
-				<div class="cm_dash_widgets_heading">
-					<?php echo $compare_period_title; ?>
-				</div>
-				<div class="cm_dash_widgets_compare_value">
-					<?php echo $compare_value_count_formatted; ?>
-				</div>
-			</div>
-			<?php
-		}
+	}
+	
+	/**
+	 * Get the range
+	 *
+	 * @param	string	$range	The range to retrieve.
+	 *
+	 * @return	array	An array contains the date range.
+	 */
+	
+	public function get_range( $range ) {
+		
+		switch( $range ) {
+		    
+		    case 'this week':
+		    	return $this->get_range_week('this week');
+		    	break;
+		    
+		    case 'last week':
+		    	return $this->get_range_week('last week');
+		    	break;
+		    
+		    case 'this month':
+		    	return $this->get_range_month('this month');
+		    	break;
+		    
+		    case 'last month':
+		    	return $this->get_range_month('last month');
+		    	break;
+		    
+		    case 'this year':
+		    	return $this->get_range_year('this year');
+		    	break;
+		    
+		    case 'last year':
+		    	return $this->get_range_year('last year');
+		    	break;
+		    
+		    case 'weekly-avg-this-year':
+		    	return $this->get_range_year('this year');
+		    	break;
+		    	
+		    case 'weekly-avg-last-year':
+		    	return $this->get_range_year('last year');
+		    	break;
+		    
+		    case 'monthly-avg-this-year':
+		    	return $this->get_range_monthly_avg_year('this year');
+		    	break;
+		    
+		    case 'monthly-avg-last-year':
+		    	return $this->get_range_year('last year');
+		    	break;
+		    
+		    case 'weekly-avg-last-year-yoy':
+		    	return $this->get_range_year_weekly_yoy('last year');
+		    	break;
+		    
+		    case 'monthly-avg-last-year-yoy':
+		    	return $this->get_range_monthly_avg_year('last year');
+		    	break;
+		    
+		    case 'this week last year':
+		    	return $this->get_range_week('this week last year');
+		    	break;
+		    
+		    case 'last week last year':
+		    	return $this->get_range_week('last week last year');
+		    	break;
+		    
+		    case 'this month last year':
+		    	return $this->get_range_month('this month last year' );
+		    	break;
+		    
+		    case 'last month last year':
+		    	return $this->get_range_month('last month last year' );
+		    	break;
+		    
+		    default:
+		    	return $this->get_range_week('this week');
+		    	break;
+		    
+	    }
+
 		
 	}
 	
@@ -955,12 +923,20 @@ class Church_Metrics_Dashboard {
 			if ( $prev == 0 ) {
 				
 				// There was no change
-				return array('diff' => 0, 'trend' => '');
+				return array(
+					'diff'	=> '',
+					'trend'	=> '',
+					'icon'	=> '',
+				);
 				
 			}
 			
 			// The trend was 'down'
-			return array('diff' => -( $prev * 100 ), 'trend' => 'down');
+			return array(
+				'diff'	=> -( $prev * 100 ) . '%',
+				'trend'	=> 'down',
+				'icon'	=> '<span class="dashicons dashicons-arrow-down"></span>',
+			);
 			
 		}
 		
@@ -968,7 +944,11 @@ class Church_Metrics_Dashboard {
 		if ( $prev == 0 ) {
 			
 			// The trend was 'up'
-			return array('diff' => $cur * 100, 'trend' => 'up');
+			return array(
+				'diff'	=> $cur * 100 . '%',
+				'trend'	=> 'up',
+				'icon'	=> '<span class="dashicons dashicons-arrow-up"></span>',
+			);
 			
 		}
 		
@@ -987,8 +967,9 @@ class Church_Metrics_Dashboard {
 		
 		// Return the data
 		return array(
-			'diff'	=> abs( round( $difference, 0 ) ),
-			'trend'	=> $trend
+			'diff'	=> abs( round( $difference, 0 ) ) . '%',
+			'trend'	=> $trend,
+			'icon'	=> '<span class="dashicons dashicons-arrow-' . $trend . '"></span>',
 		);
 		
 	}
@@ -1194,13 +1175,23 @@ class Church_Metrics_Dashboard {
 				'display_period'	=> array(
 					'title'		=> __( 'Display Period', 'church-metrics-dashboard' ),
 					'function'	=> function() {
-						echo ucwords( get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true ) );
+						//echo ucwords( get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true ) );
+						echo ucwords( $this->period_desc( get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true ) ) );
 					},
 				),
-				'compare_period'	=> array(
-					'title'		=> __( 'Compare Period', 'church-metrics-dashboard' ),
+				'compare_to'	=> array(
+					'title'		=> __( 'Compare To', 'church-metrics-dashboard' ),
 					'function'	=> function() {
-						echo ucwords( get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true ) );
+						$compare_period = get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true );
+						if ( $compare_period == 'nothing' ) {
+							$compare_to = get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_to', true );
+							foreach ( (array) $compare_to as $key => $period ) {
+								echo ucwords( $this->period_desc( $period['compare_period'] ) ) . '<br />';
+							}
+						} else {
+							echo ucwords( $this->period_desc( get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true ) ) );
+						}
+		
 					},
 				),
 				'visibility_user'	=> array(
@@ -1250,5 +1241,93 @@ class Church_Metrics_Dashboard {
 		) );
 		
 	}
+	
+	/**
+	 * Gets the description for a period
+	 *
+	 * @param	string	$period	The period to return a description for.
+	 *
+	 * @return	string	The period description.
+	 */
+	
+	public function period_desc( $period ) {
 		
+		switch ( $period ) {
+			
+			case 'this week':
+		    	return 'this week';
+		    	break;
+		    
+		    case 'this week last year':
+		    	return 'this week last year';
+		    	break;
+		    
+		    case 'last week':
+		    	return 'last week';
+		    	break;
+		    
+		    case 'last week last year':
+		    	return 'last week last year';
+		    	break;
+		    
+		    case 'this month':
+		    	return 'this month';
+		    	break;
+		    
+		    case 'this month last year':
+		    	return 'this month last year';
+		    	break;
+		    
+		    case 'last month':
+		    	return 'last month';
+		    	break;
+		    
+		    case 'last month last year':
+		    	return 'last month last year';
+		    	break;
+		    
+		    case 'this year':
+		    	return 'this year';
+		    	break;
+		    
+		    case 'last year':
+		    	return'last year';
+		    	break;
+		    
+		    case 'weekly-avg-this-year':
+		    	return 'weekly avg this year';
+		    	break;
+		    	
+		    case 'weekly-avg-last-year':
+		    	return 'weekly avg last year';
+		    	break;
+		    
+		    case 'weekly-avg-last-year-yoy':
+		    	return 'weekly avg last yr (yoy)';
+		    	break;
+		    
+		    case 'monthly-avg-this-year':
+		    	return 'monthly avg this year';
+		    	break;
+		    
+		    case 'monthly-avg-last-year':
+		    	return 'monthly avg last year';
+		    	break;
+		    
+		    case 'monthly-avg-last-year-yoy':
+		    	return 'monthly avg last yr (yoy)';
+		    	break;
+		    
+		    case 'all-time':
+		    	return 'all time';
+		    	break;
+		    
+		    default:
+		    	return '';
+		    	break;
+			
+		}
+		
+	}
+	
 }

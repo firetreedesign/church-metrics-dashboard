@@ -36,7 +36,7 @@ function cm_dash_widgets_metaboxes() {
 	    'name'             => __( 'Campus', 'church-metrics-dashboard' ),
 	    'desc'             => __( 'Select a campus', 'church-metrics-dashboard' ),
 	    'id'               => $prefix . 'campus',
-	    'type'             => 'pw_select',
+	    'type'             => 'select',
 	    'show_option_none' => false,
 	    'options'          => 'cm_dash_widgets_campus_field',
 	) );
@@ -63,7 +63,7 @@ function cm_dash_widgets_metaboxes() {
 	    'name'		=> __( 'Display data as', 'church-metrics-dashboard' ),
 	    'desc'		=> __( 'Select a display type', 'church-metrics-dashboard' ),
 	    'id'		=> $prefix . 'display',
-	    'type'		=> 'pw_select',
+	    'type'		=> 'select',
 	    'default'	=> 'numerical',
 	    'show_option_none' => false,
 	    'options'	=> array(
@@ -76,9 +76,10 @@ function cm_dash_widgets_metaboxes() {
 	    'name'				=> __( 'Display Period', 'church-metrics-dashboard' ),
 	    'desc'				=> __( 'Select a display period', 'church-metrics-dashboard' ),
 	    'id'				=> $prefix . 'display_period',
-	    'type'				=> 'pw_select',
+	    'type'				=> 'select',
 	    'default'			=> 'this_week',
 	    'show_option_none'	=> false,
+	    'row_classes'		=> 'church-metrics-dashboard-select2',
 	    'options'			=> array(
 	    	'this week'					=> __( 'This Week', 'church-metrics-dashboard' ),
 	    	'last week'					=> __( 'Last Week', 'church-metrics-dashboard' ),
@@ -92,28 +93,50 @@ function cm_dash_widgets_metaboxes() {
 	    	'monthly-avg-this-year'		=> __( 'Monthly Average This Year', 'church-metrics-dashboard' ),
 	    	'monthly-avg-last-year'		=> __( 'Monthly Average Last Year', 'church-metrics-dashboard' ),
 	    	'monthly-avg-last-year-yoy'	=> __( 'Monthly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
-	    	'all_time'					=> __( 'All Time', 'church-metrics-dashboard' ),
+	    	'all-time'					=> __( 'All Time', 'church-metrics-dashboard' ),
 	    ),
 	) );
 	
-	$cmb->add_field( array(
-	    'name'				=> __( 'Compare To', 'church-metrics-dashboard' ),
-	    'desc'				=> __( 'Select something to compare to', 'church-metrics-dashboard' ),
-	    'id'				=> $prefix . 'compare_period',
-	    'type'				=> 'pw_select',
-	    'default'			=> 'none',
-	    'show_option_none'	=> false,
-	    'options'			=> array(),
+	$compare_to_id = $cmb->add_field( array(
+		'id'	=> $prefix . 'compare_to',
+		'type'	=> 'group',
+		'description'	=> __( 'Compare To', 'church-metrics-dashboard' ),
+		'options'		=> array(
+			'group_title'	=> __( 'Comparison {#}', 'church-metrics-dashboard' ),
+			'add_button'	=> __( 'Add Another Period', 'church-metrics-dashboard' ),
+			'remove_button'	=> __( 'Remove Period', 'church-metrics-dashboard' ),
+			'sortable'		=> true,
+		),
 	) );
 	
-	$cmb->add_field( array(
-	    'name'             => __( 'Visible To User', 'church-metrics-dashboard' ),
-	    'desc'             => __( 'Select a user (optional)', 'church-metrics-dashboard' ),
-	    'id'               => $prefix . 'visibility_user',
-	    'type'             => 'pw_multiselect',
-	    'default'			=> 'all',
-	    'show_option_none' => false,
-	    'options'          => 'cm_dash_widgets_visibility_user_field',
+	$cmb->add_group_field( $compare_to_id, array(
+	    'name'				=> __( 'Period', 'church-metrics-dashboard' ),
+	    'desc'				=> __( 'Select a period to compare', 'church-metrics-dashboard' ),
+	    'id'				=> 'compare_period',
+	    'type'				=> 'select',
+	    'default'			=> 'nothing',
+	    'show_option_none'	=> false,
+	    'row_classes'		=> 'church-metrics-dashboard-select2',
+	    'options'			=> array(
+	    	'nothing'					=> __( 'None', 'church-metrics-dashboard' ),
+	    	'this week'					=> __( 'This Week', 'church-metrics-dashboard' ),
+	    	'this week last year'		=> __( 'This Week Last Year', 'church-metrics-dashboard' ),
+	    	'last week'					=> __( 'Last Week', 'church-metrics-dashboard' ),
+	    	'last week last year'		=> __( 'Last Week Last Year', 'church-metrics-dashboard' ),
+	    	'this month'				=> __( 'This Month', 'church-metrics-dashboard' ),
+	    	'this month last year'	=> __( 'This Month Last Year', 'church-metrics-dashboard' ),
+	    	'last month'				=> __( 'Last Month', 'church-metrics-dashboard' ),
+	    	'last month last year'	=> __( 'Last Month Last Year', 'church-metrics-dashboard' ),
+	    	'this year'					=> __( 'This Year', 'church-metrics-dashboard' ),
+	    	'last year'					=> __( 'Last Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-this-year'		=> __( 'Weekly Average This Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-last-year'		=> __( 'Weekly Average Last Year', 'church-metrics-dashboard' ),
+	    	'weekly-avg-last-year-yoy'	=> __( 'Weekly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
+	    	'monthly-avg-this-year'		=> __( 'Monthly Average This Year', 'church-metrics-dashboard' ),
+	    	'monthly-avg-last-year'		=> __( 'Monthly Average Last Year', 'church-metrics-dashboard' ),
+	    	'monthly-avg-last-year-yoy'	=> __( 'Monthly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
+	    	'all-time'					=> __( 'All Time', 'church-metrics-dashboard' ),
+	    ),
 	) );
 	
 	/**
@@ -138,6 +161,16 @@ function cm_dash_widgets_metaboxes() {
 	        'yes'	=> __( 'Yes', 'church-metrics-dashboard' ),
 	        'no'	=> __( 'No', 'church-metrics-dashboard' ),
 	    ),
+	) );
+	
+	$cmb->add_field( array(
+	    'name'             => __( 'Visible To User', 'church-metrics-dashboard' ),
+	    'desc'             => __( 'Select a user (optional)', 'church-metrics-dashboard' ),
+	    'id'               => $prefix . 'visibility_user',
+	    'type'             => 'pw_multiselect',
+	    'default'			=> 'all',
+	    'show_option_none' => false,
+	    'options'          => 'cm_dash_widgets_visibility_user_field',
 	) );
 
 	
@@ -291,76 +324,3 @@ function cm_dash_widgets_visibility_user_field( $field ) {
 	return $options;
 	
 }
-
-/**
- * Filter to populate the compare_period field with grouped options
- */
-
-function cm_dash_widgets_cmb_opt_groups( $args, $defaults, $field_object, $field_types_object ) {
-	
-	// Only do this for the field we want (vs all select fields)
-	if ( '_cm_dash_widgets_compare_period' != $field_types_object->_id() ) {
-		return $args;
-	}
-	
-	// Define our options
-	$option_array = array(
-		__( 'This Week', 'church-metrics-dashboard' ) => array(
-			'last week' => __( 'Last Week', 'church-metrics-dashboard' ),
-			'this week last year' => __( 'This Week Last Year', 'church-metrics-dashboard' ),
-		),
-		__( 'Last Week', 'church-metrics-dashboard' ) => array(
-			'last week last year' => __( 'Last Week Last Year', 'church-metrics-dashboard' ),
-		),
-		__( 'This Month', 'church-metrics-dashboard' ) => array(
-			'last month' => __( 'Last Month', 'church-metrics-dashboard' ),
-			'this month last year' => __( 'This Month Last Year', 'church-metrics-dashboard' ),
-		),
-		__( 'Last Month', 'church-metrics-dashboard' ) => array(
-			'last month last year' => __( 'Last Month Last Year', 'church-metrics-dashboard' ),
-		),
-		__( 'This Year', 'church-metrics-dashboard' ) => array(
-			'last year' => __( 'Last Year', 'church-metrics-dashboard' ),
-		),
-		__( 'Weekly Average This Year', 'church-metrics-dashboard' ) => array(
-			'weekly-avg-last-year' => __( 'Weekly Average Last Year', 'church-metrics-dashboard' ),
-			'weekly-avg-last-year-yoy' => __( 'Weekly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
-		),
-		__( 'Monthly Average This Year', 'church-metrics-dashboard' ) => array(
-			'monthly-avg-last-year' => __( 'Monthly Average Last Year', 'church-metrics-dashboard' ),
-			'monthly-avg-last-year-yoy' => __( 'Monthly Average Last Year (Year Over Year)', 'church-metrics-dashboard' ),
-		),
-	);
-	
-	$saved_value	= $field_object->escaped_value();
-	$value			= $saved_value ? $saved_value : $field_object->args( 'default' );
-	$options_string	= '';
-	$options_string	.= $field_types_object->select_option( array(
-		'label'		=> __( 'Nothing', 'church-metrics-dashboard' ),
-		'value'		=> 'nothing',
-		'checked'	=> ! $value
-	));
-	
-	foreach ( $option_array as $group_label => $group ) {
-		
-		$options_string .= '<optgroup label="'. $group_label .'">';
-		
-		foreach ( $group as $key => $label ) {
-			
-			$options_string .= $field_types_object->select_option( array(
-				'label'		=> $label,
-				'value'		=> $key,
-				'checked'	=> $value == $key
-			) );
-			
-		}
-		
-		$options_string .= '</optgroup>';
-	}
-	
-	// Ok, replace the options value
-	$defaults['options'] = $options_string;
-	
-	return $defaults;
-}
-add_filter( 'cmb2_select_attributes', 'cm_dash_widgets_cmb_opt_groups', 10, 4 );
