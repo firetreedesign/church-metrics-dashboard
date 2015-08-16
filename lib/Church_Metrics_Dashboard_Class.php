@@ -232,6 +232,7 @@ class Church_Metrics_Dashboard {
 					$display			= get_post_meta( get_the_ID(), '_cm_dash_widgets_display', true );
 					$display_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_display_period', true );
 					$compare_period		= get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_period', true );
+					$compare_to			= get_post_meta( get_the_ID(), '_cm_dash_widgets_compare_to', true );
 					$visibility_user	= get_post_meta( get_the_ID(), '_cm_dash_widgets_visibility_user', true );
 					
 					if ( ! is_array( $visibility_user ) ) {
@@ -265,6 +266,7 @@ class Church_Metrics_Dashboard {
 								'display'			=> $display,
 								'display_period'	=> $display_period,
 								'compare_period'	=> $compare_period,
+								'compare_to'		=> $compare_to,
 							),
 						)
 					);
