@@ -521,7 +521,7 @@ class Church_Metrics_Dashboard {
 			<div class="cm_dash_widgets_container">
 				<div class="cm_dash_widgets_heading">
 					<?php echo $data['display_period_title']; ?>
-					<?php if ( $data['compare_period'] != 'nothing' ) : ?>
+					<?php if ( $data['trend'] != '' ) : ?>
 						<span class="cm_dash_widgets_diff_<?php echo $data['trend']; ?>"><?php echo $data['trend_icon']; ?><?php echo $data['difference']; ?></span>
 					<?php endif; ?>
 				</div>
@@ -619,43 +619,9 @@ class Church_Metrics_Dashboard {
 		}
 
 		// Calculate the average
-		switch( $data['display_period'] ) {
-			
-			case 'weekly-avg-this-year':
-				$value_count = $value_count / date( 'W' , strtotime('today') );
-				break;
-			
-			case 'weekly-avg-last-year':
-				$value_count = $value_count / 52;
-				break;
-			
-			case 'monthly-avg-this-year':
-				$months_to_date = date( 'n', strtotime('today') ) - 1;
-				if ( $months_to_date > 0 ) {
-					$value_count = $value_count / $months_to_date;
-				} else {
-					$value_count = 'No data';
-				}
-				break;
-			
-			case 'monthly-avg-last-year':
-				$value_count = $value_count / 12;
-				break;
-			
-			case 'weekly-avg-last-year-yoy':
-				$value_count = $value_count / date( 'W' , strtotime('today last year') );
-				break;
-			
-			case 'monthly-avg-last-year-yoy':
-				$months_to_date = date( 'n', strtotime('today last year') ) - 1;
-				if ( $months_to_date > 0 ) {
-					$value_count = $value_count / $months_to_date;
-				} else {
-					$value_count = 'No data';
-				}
-				break;
-			
-		}
+		$value_count = $this->average( $data['display_period'], $value_count );
+		
+		$value_format = '';
 		
 		// Make sure that there is at least one record
 		if ( is_array( $cm_body ) && count( $cm_body ) > 0 && $value_count != 'No data' ) {
@@ -675,6 +641,59 @@ class Church_Metrics_Dashboard {
 		);
 		
 		return $return_data;
+		
+	}
+	
+	/**
+	 * Calculate the average
+	 *
+	 * @param	$display_period	string	The display period to average.
+	 * @param	$value			mixed	The value to average.
+	 *
+	 * @return	int	The average value.
+	 */
+	
+	public function average( $display_period, $value ) {
+		
+		switch( $display_period ) {
+			
+			case 'weekly-avg-this-year':
+				$value = $value / date( 'W' , strtotime('today') );
+				break;
+			
+			case 'weekly-avg-last-year':
+				$value = $value / 52;
+				break;
+			
+			case 'monthly-avg-this-year':
+				$months_to_date = date( 'n', strtotime('today') ) - 1;
+				if ( $months_to_date > 0 ) {
+					$value = $value / $months_to_date;
+				} else {
+					$value = 'No data';
+				}
+				break;
+			
+			case 'monthly-avg-last-year':
+				$value = $value / 12;
+				break;
+			
+			case 'weekly-avg-last-year-yoy':
+				$value = $value / date( 'W' , strtotime('today last year') );
+				break;
+			
+			case 'monthly-avg-last-year-yoy':
+				$months_to_date = date( 'n', strtotime('today last year') ) - 1;
+				if ( $months_to_date > 0 ) {
+					$value = $value / $months_to_date;
+				} else {
+					$value = 'No data';
+				}
+				break;
+			
+		}
+		
+		return $value;
 		
 	}
 	
@@ -935,9 +954,9 @@ class Church_Metrics_Dashboard {
 			
 			// The trend was 'down'
 			return array(
-				'diff'	=> -( $prev * 100 ) . '%',
-				'trend'	=> 'down',
-				'icon'	=> '<span class="dashicons dashicons-arrow-down"></span>',
+				'diff'	=> '',
+				'trend'	=> '',
+				'icon'	=> '',
 			);
 			
 		}
@@ -947,9 +966,9 @@ class Church_Metrics_Dashboard {
 			
 			// The trend was 'up'
 			return array(
-				'diff'	=> $cur * 100 . '%',
-				'trend'	=> 'up',
-				'icon'	=> '<span class="dashicons dashicons-arrow-up"></span>',
+				'diff'	=> '',
+				'trend'	=> '',
+				'icon'	=> '',
 			);
 			
 		}
