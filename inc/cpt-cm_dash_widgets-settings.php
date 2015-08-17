@@ -71,7 +71,7 @@ class cm_dash_widgets_settings {
 	public function admin_page_display() {
 		?>
 		<div class="wrap cmb2_options_page <?php echo $this->key; ?>">
-			<h2><?php echo esc_html( get_admin_page_title() ); ?></h2>
+			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 			<?php cmb2_metabox_form( $this->metabox_id, $this->key ); ?>
 		</div>
 		<?php
